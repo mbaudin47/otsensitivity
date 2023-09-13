@@ -8,7 +8,7 @@ Da Veiga, S., Global Sensitivity Analysis with Dependence Measures, Journal of S
 import numpy as np
 import openturns as ot
 
-def csiszar(sample, data, f=ot.SymbolicFunction("t", "-log(t)"), Nnodes=32):
+def csiszar(sample, data, f=ot.SymbolicFunction("t", "(sqrt(t)-1)^2"), Nnodes=32):
     """Dependence measure-based sensitivity indices.
 
     Use Csiszar divergence to compute sensitivity indices.
@@ -24,19 +24,20 @@ def csiszar(sample, data, f=ot.SymbolicFunction("t", "-log(t)"), Nnodes=32):
     :rtype: (Csiszar, n_features).
     """
     def kernel(t):
-        return t[0] * f([1 / t[0]])
+        return t[0] * f([1 / (ot.SpecFunc.ScalarEpsilon + t[0])])
     
     g = ot.PythonFunction(1, 1, kernel)
     fullSample = ot.Sample(np.asarray(sample))
     dim = fullSample.getDimension()
     size = fullSample.getSize()
     fullSample.stack(np.asarray(data))
+    fullSampleRanked = (fullSample.rank() + 0.5) / fullSample.getSize()
     algoGL = ot.GaussLegendre([Nnodes]*2)
     nodes = algoGL.getNodes()
     weights = algoGL.getWeights()
     s_indices = []
     for d in range(dim):
-        marginalSample = fullSample.getMarginal([d, dim])
+        marginalSample = fullSampleRanked.getMarginal([d, dim])
         copula = ot.BernsteinCopulaFactory().buildAsEmpiricalBernsteinCopula(marginalSample, "AMISE")
         integrand = g(copula.computePDF(nodes)).asPoint()
         s_indices.append(weights.dot(integrand))
