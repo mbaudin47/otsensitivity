@@ -21,8 +21,7 @@ def ishigami():
                                             for i in range(dimension)])
 
     # Create X/Y data
-    ot.RandomGenerator.SetSeed(0)
-    size = 1000
+    size = 1024
     sample = ot.LowDiscrepancyExperiment(ot.SobolSequence(),
                                          distribution, size).generate()
     data = model(sample)

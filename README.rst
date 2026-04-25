@@ -57,8 +57,17 @@ In case of an already existing sample, one can use density based measures:
 
 .. image::  doc/images/ishigami_moment.png
 
-This method use not only the variance but all the PDF in order to compute
-sensitivity information. Also, it does not require the use of any particlar
+One can also use dependence measure based sensitivity indices:
+
+.. code-block:: python
+
+    depmeas = csiszar(X, Y)
+    plot_indices(depmeas)
+
+.. image::  doc/images/ishigami_moment.png
+
+These methods use not only the variance but all the PDF in order to compute
+sensitivity information. Also, they dont require the use of any particular
 sampling design.
 
 How to install?
@@ -72,7 +81,7 @@ The dependencies are:
 - Python >= 2.7 or >= 3.3
 - `numpy <http://www.numpy.org>`_ >= 0.10
 - `scipy <http://scipy.org>`_ >= 0.15
-- `OpenTURNS <http://www.openturns.org>`_ >= 1.12
+- `OpenTURNS <http://www.openturns.org>`_ >= 1.16
 - `matplotlib <https://matplotlib.org>`_ >= 1.5.3
 
 
